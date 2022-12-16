@@ -52,7 +52,7 @@ fun MapDisplay()
             }
 
             Button(onClick = {
-
+                sendRequest()
             }, modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentWidth(Alignment.CenterHorizontally)){
@@ -60,6 +60,10 @@ fun MapDisplay()
             }
         }
     }
+}
+
+fun sendRequest()
+{
 }
 
 @Composable
