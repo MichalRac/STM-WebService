@@ -26,3 +26,7 @@ hs_err_pid*
 /STM-WebApp/target/
 /STM-WebApp/nbproject/private/
 /STM-WebApp/build/
+/STM-MapProvider/WebApplication1/nbproject/private/
+/STM-MapProvider/WebApplication1/build/
+/STM-MapProvider/nbproject/private/
+/STM-MapProvider/build/
