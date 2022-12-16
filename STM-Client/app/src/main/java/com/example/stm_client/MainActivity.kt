@@ -1,6 +1,7 @@
 package com.example.stm_client
 
 import android.os.Bundle
+import android.os.Handler
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -15,6 +16,14 @@ import androidx.compose.ui.unit.dp
 import com.example.stm_client.ui.theme.STMClientTheme
 
 class MainActivity : ComponentActivity() {
+    val NAMESPACE = "http://tempuri.org/"; // com.service.ServiceImpl
+    val URL = "http://commodities.karvy.com/services/NetPositionReport.asmx";
+    val METHOD_NAME = "NetPositionReport";
+    val SOAP_ACTION = "http://tempuri.org/NetPositionReport";
+    var webResponse = "";
+    var handler = Handler();
+    var thread = Thread();
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -52,7 +61,8 @@ fun MapDisplay()
             }
 
             Button(onClick = {
-
+                var testRequest = TestRequest()
+                testRequest.startWebAccess("")
             }, modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentWidth(Alignment.CenterHorizontally)){
