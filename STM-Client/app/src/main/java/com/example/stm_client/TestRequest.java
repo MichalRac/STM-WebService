@@ -13,18 +13,19 @@ import org.ksoap2.transport.HttpTransportSE;
 import Marshals.MarshalDouble;
 
 public class TestRequest {
-    private static final String NAMESPACE = "https://192.168.0.32:8080/"; // com.service.ServiceImpl
+    private static final String NAMESPACE = "https://192.168.0.32:8080/STM-MapProvider/"; // com.service.ServiceImpl
     private static final String METHOD_NAME = "getEncodedMap";
-    private static final String SOAP_ACTION = "https://192.168.0.32:8080/STM-MapProvider/MapProviderService";
-    private static final String URL = "https://192.168.0.32:8080/STM-MapProvider/MapProviderService/getEncodedMap";
+    private static final String SOAP_ACTION = NAMESPACE + METHOD_NAME;
+    private static final String URL = "https://192.168.0.32:8080/STM-MapProvider/MapProviderService?wsdl";
 
     private String webResponse = "";
     private Handler handler = new Handler();
     private Thread thread;
+    IMapProviderListener listener;
 
+    String tempImg = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
 
-    public void startWebAccess(String a) {
-        final String aa = a;
+    public void startWebAccess(IMapProviderListener listener) {
         thread = new Thread() {
             public void run() {
                 try {
@@ -56,7 +57,6 @@ public class TestRequest {
                     propInfoArg3.setValue(40D);
                     request.addProperty(propInfoArg3);
 
-
                     SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
                     //envelope.dotNet = true;
                     envelope.setOutputSoapObject(request);
@@ -67,20 +67,31 @@ public class TestRequest {
                     MarshalDouble md = new MarshalDouble();
                     md.register(envelope);
 
+                    // TO BE REMOVED
+                    listener.OnMapProvided(tempImg);
+
                     HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
                     //androidHttpTransport.debug = true;
                     androidHttpTransport.call(SOAP_ACTION, envelope);
+
+                    // TO BE REPLACED WITH RESULT
+                    listener.OnMapProvided(tempImg);
 
                     SoapObject objectResult = (SoapObject) envelope.bodyIn;
                     webResponse = objectResult.toString();
                     System.out.println("response: " + webResponse);
 
                 } catch (SoapFault sp) {
+                    // TO BE REMOVED
+                    listener.OnMapProvided(tempImg);
 
                     sp.getMessage();
                     System.out.println("error = " + sp.getMessage());
 
                 } catch (Exception e) {
+                    // TO BE REMOVED
+                    listener.OnMapProvided(tempImg);
+
                     System.out.println("problem8");
                     e.printStackTrace();
 
