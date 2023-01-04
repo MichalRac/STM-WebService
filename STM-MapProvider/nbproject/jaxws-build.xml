@@ -45,10 +45,10 @@
     </target>
     <target name="wsimport-client-MapProviderService" depends="wsimport-init">
         <mkdir dir="${build.generated.dir}/jax-wsCache/MapProviderService"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/MapProviderService" destdir="${build.generated.dir}/jax-wsCache/MapProviderService" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/MapProviderService/wsdl/localhost_8080/STM-MapProvider/MapProviderService.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/STM-MapProvider/MapProviderService?wsdl" xnocompile="true" xendorsed="true" package="MapProvider_client">
+<!--        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/MapProviderService" destdir="${build.generated.dir}/jax-wsCache/MapProviderService" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/MapProviderService/wsdl/localhost_8080/STM-MapProvider/MapProviderService.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8080/STM-MapProvider/MapProviderService?wsdl" xnocompile="true" xendorsed="true" package="MapProvider_client">
             <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/MapProviderService/wsdl/localhost_8080/STM-MapProvider/MapProviderService.wsdl"/>
             <produces dir="${build.generated.dir}/jax-wsCache/MapProviderService"/>
-        </wsimport>
+        </wsimport>-->
         <copy todir="${build.generated.sources.dir}/jax-ws">
             <fileset dir="${build.generated.dir}/jax-wsCache/MapProviderService">
                 <include name="**/*.java"/>
