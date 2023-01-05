@@ -31,6 +31,12 @@ public class MapProviderService {
         return "Hello " + txt + " !";
     }
 
+    @WebMethod(operationName = "simple")
+    public String simple() {
+        return "SimpleReturn";
+    }
+
+    
     /**
      * Web service operation
      */

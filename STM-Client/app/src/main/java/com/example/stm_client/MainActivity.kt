@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.example.stm_client.ui.theme.STMClientTheme
 import java.io.ByteArrayInputStream
 import java.io.InputStream
+import kotlin.math.abs
 
 
 class MainActivity : ComponentActivity() {
@@ -46,10 +47,10 @@ const val minLat = 54.333251000649454
 const val maxLat = 54.413205389562194
 const val minLong = 18.572490218700082
 const val maxLong = 18.709215200253727
-var selectedLat1 = 0.0
-var selectedLng1 = 0.0
-var selectedLat2 =0.0
-var selectedLng2 = 0.0
+var selectedLat1 = minLat
+var selectedLng1 = minLong
+var selectedLat2 = maxLat
+var selectedLng2 = maxLong
 
 @Composable
 fun MapDisplay()
@@ -75,6 +76,24 @@ fun MapDisplay()
                 println(selectedLng2);
                 var testRequest = TestRequest()
                 var listener = IMapProviderListener { inputImageBitMap = it };
+
+                if(abs(selectedLat1) <= 0.1) selectedLng1 = minLat;
+                if(abs(selectedLat2) <= 0.1) selectedLat2 = maxLat;
+                if(abs(selectedLng1) <= 0.1) selectedLng1 = minLong;
+                if(abs(selectedLng2) <= 0.1) selectedLng2 = maxLong;
+
+                selectedLat1 = Math.min(selectedLat1, maxLat);
+                selectedLat1 = Math.max(selectedLat1, minLat);
+
+                selectedLat2 = Math.min(selectedLat2, maxLat);
+                selectedLat2 = Math.max(selectedLat2, minLat);
+
+                selectedLng1 = Math.min(selectedLng1, maxLong);
+                selectedLng1 = Math.max(selectedLng1, minLong);
+
+                selectedLng2 = Math.min(selectedLng2, maxLong);
+                selectedLng2 = Math.max(selectedLng2, minLong);
+
                 testRequest.startWebAccess(listener, selectedLng1, selectedLat1, selectedLng2, selectedLat2)
 
             }, modifier = Modifier

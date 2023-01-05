@@ -13,10 +13,10 @@ import org.ksoap2.transport.HttpTransportSE;
 import Marshals.MarshalDouble;
 
 public class TestRequest {
-    private static final String NAMESPACE = "https://192.168.0.32:8080/STM-MapProvider/"; // com.service.ServiceImpl
+    private static final String NAMESPACE = "MapProvider"; // com.service.ServiceImpl
+    private static final String URL = "http://192.168.0.32:8080/STM-MapProvider/MapProviderService?wsdl";
     private static final String METHOD_NAME = "getEncodedMap";
-    private static final String SOAP_ACTION = NAMESPACE + METHOD_NAME;
-    private static final String URL = "https://192.168.0.32:8080/STM-MapProvider/MapProviderService?wsdl";
+    private static final String SOAP_ACTION = "http://192.168.0.32:8080/STM-MapProvider/MapProviderService/getEncodedMap";
 
     private String webResponse = "";
     private Handler handler = new Handler();
@@ -61,37 +61,31 @@ public class TestRequest {
                     //envelope.dotNet = true;
                     envelope.setOutputSoapObject(request);
 
-                    envelope.dotNet = true;
-                    envelope.implicitTypes = true;
-                    envelope.encodingStyle = SoapSerializationEnvelope.XSD;
+                    //envelope.dotNet = false;
+                    //envelope.implicitTypes = true;
+                    //envelope.encodingStyle = SoapSerializationEnvelope.XSD;
                     MarshalDouble md = new MarshalDouble();
                     md.register(envelope);
-
-                    // TO BE REMOVED
-                    listener.OnMapProvided(tempImg);
 
                     HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
                     //androidHttpTransport.debug = true;
                     androidHttpTransport.call(SOAP_ACTION, envelope);
 
-                    // TO BE REPLACED WITH RESULT
-                    listener.OnMapProvided(tempImg);
-
                     SoapObject objectResult = (SoapObject) envelope.bodyIn;
                     webResponse = objectResult.toString();
                     System.out.println("response: " + webResponse);
 
-                } catch (SoapFault sp) {
-                    // TO BE REMOVED
-                    listener.OnMapProvided(tempImg);
+                    int startIndex = webResponse.indexOf("=") + 1;
+                    int endIndex = webResponse.lastIndexOf("=") + 1;
+                    String formattedResponse = webResponse.substring(startIndex, endIndex);
 
+                    listener.OnMapProvided(formattedResponse);
+
+                } catch (SoapFault sp) {
                     sp.getMessage();
                     System.out.println("error = " + sp.getMessage());
 
                 } catch (Exception e) {
-                    // TO BE REMOVED
-                    listener.OnMapProvided(tempImg);
-
                     System.out.println("problem8");
                     e.printStackTrace();
 
