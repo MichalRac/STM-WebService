@@ -28,7 +28,10 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun STMClientTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+fun AndroidServerMapViewerClientTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {

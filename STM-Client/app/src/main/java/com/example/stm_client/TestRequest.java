@@ -14,9 +14,9 @@ import Marshals.MarshalDouble;
 
 public class TestRequest {
     private static final String NAMESPACE = "MapProvider"; // com.service.ServiceImpl
-    private static final String URL = "http://192.168.0.32:8080/STM-MapProvider/MapProviderService?wsdl";
+    private static final String URL = "http://192.168.0.21:8080/STM-MapProvider/MapProviderService?wsdl";
     private static final String METHOD_NAME = "getEncodedMap";
-    private static final String SOAP_ACTION = "http://192.168.0.32:8080/STM-MapProvider/MapProviderService/getEncodedMap";
+    private static final String SOAP_ACTION = "http://192.168.0.21:8080/STM-MapProvider/MapProviderService/getEncodedMap";
 
     private String webResponse = "";
     private Handler handler = new Handler();
