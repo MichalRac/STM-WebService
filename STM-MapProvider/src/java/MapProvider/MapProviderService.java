@@ -14,32 +14,9 @@ import javax.imageio.ImageIO;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
-import jdk.jpackage.internal.Log;
 
-/**
- *
- * @author racmi
- */
 @WebService(serviceName = "MapProviderService", targetNamespace = "MapProvider")
 public class MapProviderService {
-
-    /**
-     * This is a sample web service operation
-     */
-    @WebMethod(operationName = "hello")
-    public String hello(@WebParam(name = "name") String txt) {
-        return "Hello " + txt + " !";
-    }
-
-    @WebMethod(operationName = "simple")
-    public String simple() {
-        return "SimpleReturn";
-    }
-
-    
-    /**
-     * Web service operation
-     */
     @WebMethod(operationName = "getEncodedMap")
     public String getEncodedMap(@WebParam(name = "lat0") double lat0, @WebParam(name = "long0") double long0, @WebParam(name = "lat1") double lat1, @WebParam(name = "long1") double long1) {
         
@@ -59,6 +36,11 @@ public class MapProviderService {
         System.out.println("lat1 = " + lat1);
         System.out.println("long0 = " + long0);
         System.out.println("long1 = " + long1);
+        
+        if(lat0 == lat1 || long0 == long1)
+        {
+            return "error";
+        }
         
         int x = (int)(long0 * ImageSize);
         int y = (int)(ImageSize - (lat1 * ImageSize));
