@@ -17,47 +17,21 @@ import javax.jws.WebParam;
 
 @WebService(serviceName = "MapProviderService", targetNamespace = "MapProvider")
 public class MapProviderService {
-    @WebMethod(operationName = "getEncodedMap")
-    public String getEncodedMap(@WebParam(name = "lat0") double lat0, @WebParam(name = "long0") double long0, @WebParam(name = "lat1") double lat1, @WebParam(name = "long1") double long1) {
-        
-        System.out.println("lat0 = " + lat0);
-        System.out.println("lat1 = " + lat1);
-        System.out.println("long0 = " + long0);
-        System.out.println("long1 = " + long1);
-
+    @WebMethod(operationName = "getMap")
+    public String getMap(@WebParam(name = "latMin") double latMin, @WebParam(name = "lngMin") double lngMin, @WebParam(name = "latMax") double latMax, @WebParam(name = "lngMax") double lngMax) {
         Double ImageSize = 800D;
+        latMin = GetLatitudeAnchor(latMin);
+        latMax = GetLatitudeAnchor(latMax);
+        lngMin = GetLongitudeAnchor(lngMin);
+        lngMax = GetLongitudeAnchor(lngMax);
         
-        lat0 = GetLatitudeAnchor(lat0);
-        lat1 = GetLatitudeAnchor(lat1);
-        long0 = GetLongitudeAnchor(long0);
-        long1 = GetLongitudeAnchor(long1);
-
-        System.out.println("lat0 = " + lat0);
-        System.out.println("lat1 = " + lat1);
-        System.out.println("long0 = " + long0);
-        System.out.println("long1 = " + long1);
-        
-        if(lat0 == lat1 || long0 == long1)
-        {
-            return "error";
-        }
-        
-        int x = (int)(long0 * ImageSize);
-        int y = (int)(ImageSize - (lat1 * ImageSize));
-
-        int x2 = (int)((long1 * ImageSize));
-        int y2 = (int)(ImageSize - (lat0 * ImageSize));
-        
+        int x = (int)(lngMin * ImageSize);
+        int y = (int)(ImageSize - (latMax * ImageSize));
+        int x2 = (int)((lngMax * ImageSize));
+        int y2 = (int)(ImageSize - (latMin * ImageSize));
         int width = x2 - x;
         int height = y2 - y;
         
-        System.out.println("x = " + x);
-        System.out.println("y = " + y);
-        System.out.println("x2 = " + x2);
-        System.out.println("y2 = " + y2);
-        System.out.println("width = " + width);
-        System.out.println("height = " + height);
-
         try{
             InputStream fullMapImageBase64 = getClass().getClassLoader().getResourceAsStream("map.png");
             BufferedImage img = ImageIO.read(fullMapImageBase64);
@@ -67,18 +41,14 @@ public class MapProviderService {
             ImageIO.write(croppedImage, "png", baos);
             String cropped = Base64.getEncoder().encodeToString(baos.toByteArray());
             return cropped;
-
         }
         catch(IOException e)
         {
-            
+            System.out.println("Error handling the input/converting the image");
         }
-
-
-        //TODO write your implementation code here:
-        String testString = "hello world";
-        String encodedString = Base64.getEncoder().encodeToString(testString.getBytes());
-        return encodedString;
+        
+        // fallback image
+        return "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
     }
     
     private Double GetLatitudeAnchor(Double lat)

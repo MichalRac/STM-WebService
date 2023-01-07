@@ -1,5 +1,5 @@
 package com.example.stm_client;
 
-public interface IMapProviderListener {
+public interface IMapResponseListener {
     void OnMapProvided(String base64Map);
 }
