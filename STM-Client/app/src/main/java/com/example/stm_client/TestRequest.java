@@ -75,9 +75,7 @@ public class TestRequest {
                     webResponse = objectResult.toString();
                     System.out.println("response: " + webResponse);
 
-                    int startIndex = webResponse.indexOf("=") + 1;
-                    int endIndex = webResponse.lastIndexOf("=") + 1;
-                    String formattedResponse = webResponse.substring(startIndex, endIndex);
+                    String formattedResponse = webResponse.substring(29, webResponse.length() - 3);
 
                     listener.OnMapProvided(formattedResponse);
 
