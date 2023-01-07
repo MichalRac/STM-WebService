@@ -6,13 +6,16 @@ import android.util.Base64
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -68,6 +71,10 @@ fun MapViewer()
     var longMinText by remember { mutableStateOf(minLng.toString().substring(0,10)) }
     var longMaxText by remember { mutableStateOf(maxLng.toString().substring(0,10)) }
 
+    var dragStart by remember { mutableStateOf(Offset(0f, 0f)) }
+    var dragEnd by remember { mutableStateOf(Offset(0f, 0f)) }
+
+
     val decodedString = Base64.decode(imageBase64, Base64.DEFAULT)
     val inputStream: InputStream = ByteArrayInputStream(decodedString)
     val bitmap = BitmapFactory.decodeStream(inputStream)
@@ -85,6 +92,60 @@ fun MapViewer()
                 .wrapContentWidth(Alignment.CenterHorizontally)
                 .height(200.dp)
                 .width(200.dp)
+                .pointerInput(Unit){
+                    detectDragGestures(onDragStart = {
+                        dragStart = it
+                        dragEnd = dragStart
+                    }, onDragEnd = {
+                        val endX = Math.min(555f, Math.max(0f, dragEnd.x))
+                        val endY = Math.min(555f, Math.max(0f, dragEnd.y))
+                        dragEnd = Offset(endX, endY)
+
+                        var minX = dragStart.x / 555f
+                        var maxX = dragEnd.x / 555f
+                        var minY = 1 - (dragStart.y / 555f)
+                        var maxY = 1 - (dragEnd.y / 555f)
+
+                        if(minX > maxX)
+                        {
+                            val temp = minX
+                            minX = maxX
+                            maxX = temp
+                        }
+
+                        if(minY > maxY)
+                        {
+                            val temp = minY
+                            minY = maxY
+                            maxY = temp
+                        }
+
+                        selectedLatMin = (selectedLatMax - selectedLatMin) * minY + selectedLatMin
+                        selectedLatMax = (selectedLatMax - selectedLatMin) * maxY + selectedLatMin
+                        selectedLngMin = (selectedLngMax - selectedLngMin) * minX + selectedLngMin
+                        selectedLngMax = (selectedLngMax - selectedLngMin) * maxX + selectedLngMin
+
+                        if(selectedLatMin < minLat) selectedLatMin = minLat
+                        if(selectedLatMax > maxLat) selectedLatMax = maxLat
+                        if(selectedLngMin < minLng) selectedLngMin = minLng
+                        if(selectedLngMax > maxLng) selectedLngMax = maxLng
+
+                        if(selectedLatMin > selectedLatMax) selectedLatMin = selectedLatMax - 0.001
+                        if(selectedLatMax < selectedLatMin) selectedLatMax = selectedLatMin + 0.001
+                        if(selectedLngMin > selectedLngMax) selectedLngMin = selectedLngMax - 0.001
+                        if(selectedLngMax < selectedLngMin) selectedLngMax = selectedLngMin + 0.001
+
+                        latMinText = selectedLatMin.toString().substring(0,10)
+                        latMaxText = selectedLatMax.toString().substring(0,10)
+                        longMinText = selectedLngMin.toString().substring(0,10)
+                        longMaxText = selectedLngMax.toString().substring(0,10)
+
+                        var mapRequestHandler = MapRequestHandler()
+                        var listener = IMapResponseListener { imageBase64 = it }
+                        mapRequestHandler.SendRequest(listener, selectedLatMin, selectedLatMax, selectedLngMin, selectedLngMax)
+                    }
+                    ) { _, dragAmount -> dragEnd += dragAmount }
+                }
         )
 
         Spacer(modifier = Modifier.height(25.dp))
@@ -283,6 +344,12 @@ fun MapViewer()
             Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally))
         Text("LNGS: ${minLng.toString().substring(0,5)} - ${maxLng.toString().substring(0,5)}",
             Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally))
+
+        Text("DragStart: $dragStart",
+            Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally))
+        Text("DragEnd: $dragEnd",
+            Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally))
+
     }
 
 }
