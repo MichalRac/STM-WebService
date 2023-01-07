@@ -64,6 +64,8 @@ fun MapDisplay()
             FetchedImage(inputImageBitMap)
 
             Column(modifier = Modifier.padding(10.dp)){
+                Text("LAT: ${minLat.toString().substring(0,5)} - ${maxLat.toString().substring(0,5)}")
+                Text("LNGS: ${minLong.toString().substring(0,5)} - ${maxLong.toString().substring(0,5)}")
                 CoordinatesInput("Bottom Left", 0)
                 Spacer(modifier = Modifier.height(10.dp))
                 CoordinatesInput("Top Right", 1)
@@ -135,40 +137,69 @@ fun CoordinatesInput(title: String, id:Int) {
     var longText by remember { mutableStateOf("") }
     var latText by remember { mutableStateOf("") }
 
+    var inputLat = ""
+    var inputLng = ""
+    if(id==0){
+        inputLat = minLat.toString().substring(0,5)
+        inputLng = minLong.toString().substring(0,5)
+    }else{
+        inputLat = maxLat.toString().substring(0,5)
+        inputLng = maxLong.toString().substring(0,5)
+    }
+
     Column(modifier = Modifier
         .fillMaxWidth()
         .wrapContentWidth(Alignment.CenterHorizontally))
     {
         Text(title)
-        TextField(
-            value = longText,
-            onValueChange = { longText = it
-                if(id==0){
-                    selectedLng1 = longText.toDouble();
-                }else{
-                    selectedLng2 = longText.toDouble();
-                }
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Lat", modifier = Modifier.width(30.dp))
+            Spacer(modifier = Modifier.width(20.dp
 
-                            },
-            modifier = Modifier,
+            ))
+            TextField(
+                value = latText,
+                onValueChange = { latText = it
+                    if(id==0){
+                        selectedLng1 = latText.toDouble();
+                    }else{
+                        selectedLng2 = latText.toDouble();
+                    }
 
-            label = { Text(text = "long");
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-        TextField(
-            value = latText,
-            onValueChange = { latText = it
-                            if(id==0){
-                                selectedLat1 = latText.toDouble()
-                            }else{
-                            selectedLat2 = latText.toDouble()
-                            }
-            },
-            modifier = Modifier,
-            label = { Text(text = "lat") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                },
+                modifier = Modifier,
+
+                label = { Text(text = inputLat)
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
+        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Text("Lng", modifier = Modifier.width(30.dp))
+            Spacer(modifier = Modifier.width(20.dp
+
+            ))
+            TextField(
+                value = longText,
+                onValueChange = { longText = it
+                    if(id==0){
+                        selectedLat1 = longText.toDouble()
+                    }else{
+                        selectedLat2 = longText.toDouble()
+                    }
+                },
+                modifier = Modifier,
+                label = { Text(text = inputLng) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+        }
+
+
     }
 }
 
